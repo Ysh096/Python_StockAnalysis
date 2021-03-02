@@ -654,3 +654,234 @@ plt.show()
 ```
 
 ![Figure_3](./image/Figure_3.png)
+
+# 3.5 최대 손실 낙폭
+
+MDD(Maximum drawdown)은 특정 기간에 발생한 최고점에서 최저점까지의 가장 큰 손실을 말한다.
+
+퀀트 투자에서 수익률을 높이는 것 보다 MDD를 낮추는 것이 더 낫다고 할 만큼 중요한 지표!
+
+-> 특정 기간 동안 얼마의 손실이 날 수 있는지를 나타낸다.
+
+계산은 매우 단순하다.
+
+```
+MDD = (최저점 - 최고점)/최저점
+```
+
+
+
+**서브프라임 사태 당시의 MDD 구하기** 
+
+`rolling() 함수: 시리즈에서 윈도우 크기에 해당하는 개수만큼 데이터를 추출하여 집계 함수에 해당하는 연산을 실시한다.`
+
+`series.rolling(윈도우 크기 [, min_periods=1]) [.집계 함수()]`
+
+- [] 처리한 부분은 넣어도 되고 안 넣어도 되는 부분!
+
+- 집계 함수는 max(), min(), mean() 을 사용할 수 있다.
+- min_periods를 지정하면 데이터 개수가 윈도우 크기에 미치지 못하더라도 min_periods만 만족하면 연산을 수행한다.
+
+실제 사용할 때에는 다음과 같이 쓴다.
+
+`kospi['Adj Close'].rolling(window, min_periods=1).max()`
+
+```python
+from pandas_datareader import data as pdr
+import yfinance as yf
+yf.pdr_override()
+import matplotlib.pyplot as plt
+
+kospi = pdr.get_data_yahoo('^KS11', '2004-01-04') # Kospi 지수의 심볼 = ^KS11
+
+window = 252 # 1년 개장일 어림값
+peak = kospi['Close'].rolling(window, min_periods=1).max()
+drawdown = kospi['Close']/peak - 1.0 # peak 대비 얼마나 하락했는가? 매일 달라짐
+max_dd = drawdown.rolling(window, min_periods=1).min() #drawdown의 252일 중 최저치(window는 계속 움직임)
+
+# 그래프로 나타내기
+plt.figure(figsize=(9, 7))
+plt.subplot(211) # 2행 1열 중 1행에 그림
+kospi['Close'].plot(label='KOSPI', title='KOSPI MDD', grid=True, legend = True) # 전체 코스피 차트 그리기
+plt.subplot(212) # 2행 1 열 중 2행에 그림
+drawdown.plot(c='blue', label='KOSPI DD', grid=True, legend = True) # drawdown과 max_dd 한 행에 나타내기
+max_dd.plot(c='red', label='KOSPI MDD', grid=True, legend=True)
+plt.show()
+```
+
+![Figure_4](3_Pandas를활용한데이터분석.assets/Figure_4-1614706590483.png)
+
+# 3.6 회귀 분석과 상관관계
+
+두 변수 사이의 관계를 나타내는 회귀식을 알아내면 임의의 독립변수에 대해서 종속변수값을 추측해 볼 수 있다. (예측)
+
+y = f(x)에서 x가 독립변수, y가 x에 종속된 종속변수이다.
+
+
+
+회귀(regression)의 유래: 영국의 통계학자 Francis Galton이 수행한 부모 자식간의 키 상관관계 연구에서 부모의 키가 매우 큰 자식들의 키는 부모보다 대부분 작고, 부모의 키가 매우 작은 자식들의 키는 부모보다 대부분 큰 현상을 발견하였고, 키가 평균으로 회귀(돌아감)하려는 경향이 있음을 알아냄. 이때부터 상관관계 분석에 회귀라는 용어를 사용하게 됨.
+
+
+
+**KOSPI와 다우존스 지수 비교**
+국내 주식과 미국 주식의 상관관계는 어떻게 될까?
+
+코스피와 다우존스 지수 단순 비교는 다음과 같다.
+
+```python
+from pandas_datareader import data as pdr
+import yfinance as yf
+yf.pdr_override()
+
+dow = pdr.get_data_yahoo('^DJI', '2000-01-04') # 다우존수 지수의 심볼 = ^DJI
+kospi = pdr.get_data_yahoo('^KS11', '2000-01-04') # 코스피
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(9, 5))
+plt.plot(dow.index, dow.Close, 'r--', label='Dow Jones Industrial')
+plt.plot(kospi.index, kospi.Close, 'b', label = 'KOSPI')
+plt.grid(True)
+plt.legend(loc='best')
+plt.show()
+```
+
+![Figure_5](./image/Figure_5.png)
+
+단순 비교시에는 지수의 기준 시점이 달라서(한국은 1980년 100포인트에서 시작, 미국은 그보다 훨씬 일찍 시작) 두 지수를 비교하기가 어렵다.
+
+그렇다면 어떻게 비교해야 효과적일까?
+
+
+
+**지수화 비교**
+
+특정 동일 시점을 기준으로 하여 지수를 비율로 나타내면 비교하기 더 용이할 것이다.
+
+현재 종가를 특정 시점의 종가로 나누어 변동률을 구해보자.
+
+```python
+# 2. 지수화 비교
+d = (dow.Close / dow.Close.loc['2000-01-04']) * 100
+k = (kospi.Close / kospi.Close.loc['2000-01-04']) * 100
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(9, 5))
+plt.plot(dow.index, d, 'r--', label='Dow Jones Industrial Average')
+plt.plot(kospi.index, k, 'b', label='KOSPI')
+plt.grid(True)
+plt.legend(loc='best')
+plt.show()
+```
+
+![Figure_6](./image/Figure_6.png)
+
+위 그래프는 2000년 첫 개장일을 기준으로 지수를 표현한 것이다. 단순 비교한 것 보다는 훨씬 상관관계가 있어 보인다.
+
+
+
+**산점도 분석**
+
+산점도란, 독립변수 x와 종속변수 y의 상관관계를 확인할 때 쓰는 그래프이다. 가로축에 독립변수 x를, 세로축에 종속변수 y를 나타낸다. 다우존스 지수를 독립변수로, 코스피를 종속변수로 정하고 한번 그림을 그려보자.
+
+*중요 포인트!!*
+
+---
+
+그 전에, 산점도를 그리려면 x와 y의 데이터 길이가 같아야 하는데 미국과 한국의 주식 시장 휴일이 다르므로 차이가 나게 된다. 이 상태로 그리려고 하면 오류가 발생함! 이를 방지하기 위해서 두 지수 데이터를 데이터프레임으로 합쳐준다. (날짜 인덱스로 묶이게 됨)
+
+`df = pd.DataFrame({'DOW': dow['Close'], 'KOSPI': kospi['Close']})`
+
+이렇게 처리하면 서로의 날짜에 빈 부분이 있을 경우 NaN으로 처리된다. 이제 NaN을 제거해야 하는데, 0을 넣는게 아니라 NaN바로 뒤의 값으로 채워주도록 하자.
+
+`df = df.fillna(method='bfill')`
+
+bfill은 backward fill로, 말 그대로 뒤의 것으로 채워준다는 뜻이다.
+
+그럴 확률이 적긴 하지만 만약 마지막 행이 NaN인 경우 ffill(foward fill)을 사용하여 NaN을 바로 앞의 값으로 채워줄 수 있다.
+
+`df = df.fillna(method='ffill')`
+
+
+
+두 번째 방법으로, NaN이 있는 날짜는 코스피와 다우존스 모두 지워버리는 방법도 있다. dropna() 함수를 이용하면 된다.
+
+`df = pd.DataFrame({'DOW': dow['Close'], 'KOSPI': kospi['Close']})`
+
+`df = df.dropna()`
+
+---
+
+위의 포인트를 고려하여 산점도(scatter() 함수 이용)를 그려보자.
+
+```python
+# 3. 산점도
+import pandas as pd
+df = pd.DataFrame({'DOW': dow['Close'], 'KOSPI': kospi['Close']})
+df = df.fillna(method='bfill')
+df = df.fillna(method='ffill')
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(7, 7))
+plt.scatter(df['DOW'], df['KOSPI'], marker='.')
+plt.xlabel('Dow Jones Industrial Average')
+plt.ylabel('KOSPI')
+plt.show()
+```
+
+![Figure_7](3_Pandas를활용한데이터분석.assets/Figure_7.png)
+
+점의 분포가 y=x 직선 형태에 가까울수록 두 변수에 직접적인 관계가 있다고 할 수 있는데, 다우존스 지수와 KOSPI 지수는 서로 영향은 있지만 그리 강하지는 않다. 산점도 그래프만으로는 정확한 분석이 어려우므로 선형 회귀 분석으로 더 정확히 확인해보자.
+
+
+
+**사이파이 선형 회귀 분석**
+
+SciPy: 파이썬 기반 수학, 과학, 엔지니어링용 핵심 패키지 모음(넘파이, 맷플롯립, 심파이, 판다스 포함)
+
+`pip install scipy`
+
+
+
+*선형 회귀 모델*
+
+---
+
+Y_i = B_0 + B_1 * X_i + e_i   --- (i = 1, 2, ... , n)
+
+- Y_i : i 번째 종속변수의 값
+- X_i : i 번째 독립변수의 값
+- B_0 : 선형 회귀식의 절편
+- B_1 : 선형 회귀식의 기울기
+- e_i : 오차항(종속변수 Y의 실제값과 기대치의 차이)
+
+독립변수 X와 종속변수 Y의 관계가 위와 같이 1차식으로 나타날 때 선형 회귀 모델이라고 부른다.
+
+---
+
+여기서 연구하듯 뭔가 계산해내려는 것은 아니고, 사이파이 패키지의 서브 패키지인 stats를 이용하여 선형 회귀 모델을 간단히 생성해 볼 것이다.
+
+`model = stats.linregress(독립변수 x, 종속변수 y)`
+
+```python
+from scipy import stats
+import pandas as pd
+from pandas_datareader import data as pdr
+import yfinance as yf
+yf.pdr_override()
+
+dow = pdr.get_data_yahoo('^DJI', '2000-01-04') # 다우존수 지수의 심볼 = ^DJI
+kospi = pdr.get_data_yahoo('^KS11', '2000-01-04') # 코스피
+
+df = pd.DataFrame({'DOW': dow['Close'], 'KOSPI': kospi['Close']})
+# 중요, NaN 제거
+df = df.fillna(method='bfill')
+df = df.fillna(method='ffill')
+regr = stats.linregress(df['DOW'], df['KOSPI'])
+print(regr)
+```
+
+```
+LinregressResult(slope=0.07786511256143953, intercept=445.0224700435315, rvalue=0.7696352190680316, pvalue=0.0, stderr=0.0008723660942851926)
+```
+
+--> 코스피와 다우존스의 관계는 Y = 445.02 + 0.08X 정도로 표현할 수 있다!
