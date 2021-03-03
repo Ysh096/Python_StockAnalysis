@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="11b4b7a3-55ce-457e-8bfb-12d58de0b597" name="Default Changelist" comment="" />
+    <list default="true" id="11b4b7a3-55ce-457e-8bfb-12d58de0b597" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../3_Pandas를활용한데이터분석.assets/Figure_5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../3_Pandas를활용한데이터분석.assets/Figure_6.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../3_Pandas를활용한데이터분석.assets/Figure_7.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../3_Pandas를활용한데이터분석.md" beforeDir="false" afterPath="$PROJECT_DIR$/../3_Pandas를활용한데이터분석.md" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,10 +45,38 @@
         </counts>
       </usages-collector>
     </session>
+    <session id="-221983330">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.open.time.0" value="1" />
+          <entry key="project.opened" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="py" value="2" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="Python" value="2" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="py" value="639" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="Python" value="639" />
+        </counts>
+      </usages-collector>
+    </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/3.4_주식비교하기.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="241">
@@ -55,7 +88,34 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/3.6_회귀분석과상관관계.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="147">
+              <caret line="40" selection-start-line="40" selection-end-line="46" selection-end-column="11" />
+              <folding>
+                <element signature="e#0#41#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/3.7_상관계수에따른리스크완화.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="308">
+              <caret line="97" column="6" lean-forward="true" selection-start-line="97" selection-start-column="6" selection-end-line="97" selection-end-column="6" />
+              <folding>
+                <element signature="e#2063#2104#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -64,13 +124,17 @@
         <option value="$PROJECT_DIR$/3.1_넘파이배열.py" />
         <option value="$PROJECT_DIR$/3.3_데이터프레임.py" />
         <option value="$PROJECT_DIR$/3.4_주식비교하기.py" />
+        <option value="$PROJECT_DIR$/3.7_상관계수에따른리스크완화.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="950" />
     <option name="width" value="980" />
     <option name="height" value="1030" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -81,8 +145,8 @@
         <subPane>
           <expand>
             <path>
-              <item name="pandas활용" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pandas활용" type="462c0819:PsiDirectoryNode" />
+              <item name="3_codes" type="b2602c69:ProjectViewProjectNode" />
+              <item name="3_codes" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -92,7 +156,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="D:/github_push/programmers/D2" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunDashboard">
@@ -107,7 +171,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.3.4_주식비교하기">
+  <component name="RunManager" selected="Python.3.7_상관계수에따른리스크완화">
     <configuration name="3.1_넘파이배열" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="pandas활용" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -171,13 +235,36 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="3.7_상관계수에따른리스크완화" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="pandas활용" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/3.7_상관계수에따른리스크완화.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.3.1_넘파이배열" />
       <item itemvalue="Python.3.3_데이터프레임" />
       <item itemvalue="Python.3.4_주식비교하기" />
+      <item itemvalue="Python.3.7_상관계수에따른리스크완화" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.3.7_상관계수에따른리스크완화" />
         <item itemvalue="Python.3.4_주식비교하기" />
         <item itemvalue="Python.3.3_데이터프레임" />
         <item itemvalue="Python.3.1_넘파이배열" />
@@ -206,7 +293,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32907802" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.328125" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -251,6 +338,26 @@
           <caret line="59" column="19" selection-start-line="59" selection-start-column="19" selection-end-line="59" selection-end-column="19" />
           <folding>
             <element signature="e#1663#1704#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/3.6_회귀분석과상관관계.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="40" selection-start-line="40" selection-end-line="46" selection-end-column="11" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/3.7_상관계수에따른리스크완화.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="97" column="6" lean-forward="true" selection-start-line="97" selection-start-column="6" selection-end-line="97" selection-end-column="6" />
+          <folding>
+            <element signature="e#2063#2104#0" expanded="true" />
           </folding>
         </state>
       </provider>

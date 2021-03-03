@@ -828,7 +828,7 @@ plt.ylabel('KOSPI')
 plt.show()
 ```
 
-![Figure_7](3_Pandas를활용한데이터분석.assets/Figure_7.png)
+![Figure_7](./image/Figure_7.png)
 
 점의 분포가 y=x 직선 형태에 가까울수록 두 변수에 직접적인 관계가 있다고 할 수 있는데, 다우존스 지수와 KOSPI 지수는 서로 영향은 있지만 그리 강하지는 않다. 산점도 그래프만으로는 정확한 분석이 어려우므로 선형 회귀 분석으로 더 정확히 확인해보자.
 
@@ -885,3 +885,192 @@ LinregressResult(slope=0.07786511256143953, intercept=445.0224700435315, rvalue=
 ```
 
 --> 코스피와 다우존스의 관계는 Y = 445.02 + 0.08X 정도로 표현할 수 있다!
+
+**위의 결과에서 rvalue는 dow와 kospi의 상관계수임을 알아두자!**
+
+
+
+# 3.7 상관계수에 따른 리스크 완화
+
+상관계수(Coefficient of Correlation)란 독립변수와 종속변수 사이의 상관관계의 정도를 나타내는 수치로, -1과 1 사이의 값을 가진다.
+
+상관계수가 1이면 종속변수는 독립변수의 변화를 그대로 따라가며, 상관계수가 -1이면 종속변수는 독립변수의 변화와 반대로 움직인다. 상관계수가 0이면 두 변수는 관계가 없다.
+
+상관계수를 구할 때에는 앞에서 살펴본 **stats**를 사용할 수도 있고, 다음의 **두 가지 방법**을 사용할 수도 있다.
+
+**데이터프레임으로 상관계수 구하기**
+
+데이터프레임은 `corr()`라는 함수를 통해 상관계수를 쉽게 구할 수 있게 해준다.
+
+다음과 같이 코드를 작성해보자.
+
+```python
+from pandas_datareader import data as pdr
+import pandas as pd
+import yfinance as yf
+yf.pdr_override()
+
+dow = pdr.get_data_yahoo('^DJI', '2000-01-04') # 다우존수 지수의 심볼 = ^DJI
+kospi = pdr.get_data_yahoo('^KS11', '2000-01-04') # 코스피
+
+# 데이터 프레임으로 두 시리즈 묶기
+df = pd.DataFrame({'DOW': dow['Close'], 'KOSPI': kospi['Close']})
+
+# NaN 부분 없애주기
+df = df.fillna(method='bfill')
+df = df.fillna(method='ffill')
+
+print(df.corr())
+
+# 결과
+			DOW     KOSPI
+
+DOW    1.000000  0.769918
+KOSPI  0.769918  1.000000
+```
+
+다우 지수와 코스피의 상관계수는 0.769918로 구해졌다.
+
+
+
+**시리즈로 상관계수 구하기**
+
+데이터프레임이 아니라 두 개의 시리즈만으로도 상관계수를 구할 수 있다. 마찬가지로 corr()함수를 시리즈 자료형에서 사용할 수 있다. 다만 당연히 두 시리즈의 데이터 길이가 같아야 하기 때문에 아래 코드에서는 데이터프레임으로 묶은 후 NaN 부분을 없애주는 과정을 거쳤다.
+
+만약 데이터 길이가 같은 두 시리즈를 가지고 있다면 그냥 써도 될 것이다.
+
+그리고, 만약 데이터프레임에 여러 개의 시리즈가 들어가 있다면 그 중 두 개를 골라 따로 상관계수를 구할 필요가 있을 때 사용할 수 있을 것이다.
+
+```python
+from pandas_datareader import data as pdr
+import pandas as pd
+import yfinance as yf
+yf.pdr_override()
+
+dow = pdr.get_data_yahoo('^DJI', '2000-01-04') # 다우존수 지수의 심볼 = ^DJI
+kospi = pdr.get_data_yahoo('^KS11', '2000-01-04') # 코스피
+
+# 데이터 프레임으로 두 시리즈 묶기
+df = pd.DataFrame({'DOW': dow['Close'], 'KOSPI': kospi['Close']})
+
+# NaN 부분 없애주기
+df = df.fillna(method='bfill')
+df = df.fillna(method='ffill')
+
+print(df['DOW'].corr(df['KOSPI']))
+# 결과는 동일
+```
+
+
+
+**결정계수 구하기**
+
+결정계수(R-squared)는 관측된 데이터에서 추정한 회귀선이 실제로 데이터를 어느 정도 설명하는지 나타내는 계수이다.
+
+상관계수를 제곱한 값으로, 따로 긴 코드를 작성할 필요는 없을 것 같다. 아래와 같이 구한다.
+
+`r_value = df['DOW'].corr(df['KOSPI'])`
+
+`r_squared = r_value  ** 2`
+
+
+
+**다우존스 지수와 KOSPI의 회귀 분석**
+
+지금까지 다우존스 지수의 산점도와 linregress() 함수를 이용한 선형회귀 모델을 구해 보았다. 이 두 가지를 한 번에 나타내어 보다 제대로 된 분석을 한번 해보자.
+
+```python
+# 3.7.4 다우존스 지수와 KOSPI의 회귀 분석
+from pandas_datareader import data as pdr
+import pandas as pd
+from scipy import stats
+import yfinance as yf
+import matplotlib.pyplot as plt
+yf.pdr_override()
+
+# 다우존스, 코스피 지수 데이터 가져오기
+dow = pdr.get_data_yahoo('^DJI', '2000-01-04') # 다우존수 지수의 심볼 = ^DJI
+kospi = pdr.get_data_yahoo('^KS11', '2000-01-04') # 코스피
+
+# 데이터 프레임으로 묶어주기
+df = pd.DataFrame({'DOW': dow['Close'], 'KOSPI': kospi['Close']})
+df = df.fillna(method='bfill')
+df = df.fillna(method='ffill')
+
+# 선형회귀식 도출
+regr = stats.linregress(df['DOW'], df['KOSPI'])
+regr_line = 'Y = {:.2f} * X + {:.2f}'.format(regr.slope, regr.intercept)
+print(regr_line)
+
+# 그려보기
+plt.figure(figsize=(7, 7))
+plt.scatter(df['DOW'], df['KOSPI'], marker='.')
+plt.plot(df['DOW'], regr.slope*df['DOW'] + regr.intercept, 'r')
+plt.legend(['DOW x KOSPI', regr_line])
+plt.title('DOW x KOSPI (R = {:.2f})'.format(regr.rvalue))
+plt.xlabel('Dow Jones Industrial Average')
+plt.ylabel('KOSPI')
+plt.show()
+```
+
+![Figure_8](./image/Figure_8.png)
+
+
+
+미국 국채에 대해 위 그래프와 상관계수를 구해보면 다음과 같다.
+
+```python
+# 미국 국채와 KOSPI의 회귀 분석
+from pandas_datareader import data as pdr
+import pandas as pd
+from scipy import stats
+import yfinance as yf
+import matplotlib.pyplot as plt
+yf.pdr_override()
+
+# 미국국채, 코스피 지수 데이터 가져오기
+tlt = pdr.get_data_yahoo('TLT', '2000-01-04') # 미국국채 심볼 TLT
+kospi = pdr.get_data_yahoo('^KS11', '2000-01-04') # 코스피
+
+# 데이터 프레임으로 묶어주기
+df = pd.DataFrame({'TLT': tlt['Close'], 'KOSPI': kospi['Close']})
+df = df.fillna(method='bfill')
+df = df.fillna(method='ffill')
+
+# 선형회귀식 도출
+regr = stats.linregress(df['TLT'], df['KOSPI'])
+regr_line = 'Y = {:.2f} * X + {:.2f}'.format(regr.slope, regr.intercept)
+print(regr_line)
+
+# 그려보기
+plt.figure(figsize=(7, 7))
+plt.scatter(df['TLT'], df['KOSPI'], marker='.')
+plt.plot(df['TLT'], regr.slope*df['TLT'] + regr.intercept, 'r')
+plt.legend(['TLT x KOSPI', regr_line])
+plt.title('TLT x KOSPI (R = {:.2f})'.format(regr.rvalue))
+plt.xlabel('iShares Barclays 20 + Yr Treas.Bond(TLT)')
+plt.ylabel('KOSPI')
+plt.show()
+```
+
+![Figure_9](./image/Figure_9.png)
+
+
+
+다우존스 지수와 미국 국채의 코스피에 대한 상관계수는 모두 0.76으로 계산되었다. **상관계수에 따라 투자를 할 시 리스크 완화 효과**가 있는데, 구체적으로는 다음과 같다.
+
+- 상관계수가 낮은 자산을 대상으로 분산 투자하면 위험을 감소시킬 수 있다
+- 상관계수에 따른 리스크 완화 효과
+  - 1.0 : 리스크 완화 효과가 없음
+  - 0.5 : 중간 정도의 리스크 완화 효과가 있음
+  - 0 : 상당한 리스크 완화 효과가 있음
+  - -0.5: 대부분의 리스크를 제거함
+  - -1: 모든 리스크를 제거함
+
+위의 이론에 따라서, 국내 주식에 투자하면서 다우존스 지수나 미국 국채에 동시에 분산 투자를 하면 약간의 리스크 완화 효과가 있을 수 있다는 것을 파악할 수 있다. 책에서는 미국 국채가 0.72의 상관계수를 가져서 조금 더 리스크를 완화시켜준다고 나왔지만, 약 2년 만에 상관계수가 좀 더 커져서 이제는 다우존스나 미국 국채나 국내 주식에 대해 비슷한 상관계수를 가지게 되었다.
+
+
+
+그렇다면.. 자본이 많은 경우, 해당 주식이 망하지는 않는다는 가정 하에(안전한 주식에 대해) 어떤 주식에 투자를 하면 그에 대해 상관계수가 -1인 주식에 동시에 투자하여 어느 한 쪽이 실적을 내면 해당 주식을 야금야금 팔고, 반대쪽이 실적을 내면 또 실적을 낸 주식을 야금야금 팔고.. 하면서 자본을 서서히 늘릴 수 있지 않을까?
+
+-> 너무 위험한 생각이긴 하다.
